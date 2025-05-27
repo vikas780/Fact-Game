@@ -4,9 +4,11 @@ import { Navigate } from 'react-router-dom'
 
 const ProtectedRoute = ({ children }) => {
   const { isLoggedIn } = useFirebaseAuthContext()
+
   if (!isLoggedIn) {
     return <Navigate to='/login' />
   }
+  console.log('Islogged in', isLoggedIn)
 
   return children
 }

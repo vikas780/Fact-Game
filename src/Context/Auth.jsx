@@ -35,12 +35,14 @@ const AuthProvider = ({ children }) => {
     signInWithEmailAndPassword(firebaseAuth, email, password)
 
   useEffect(() => {
-    onAuthStateChanged(firebaseAuth, (user) => {
+    const unsubscribe = onAuthStateChanged(firebaseAuth, (user) => {
       if (user) {
         setIsLoggedIn(true)
+      } else {
+        setIsLoggedIn(false)
       }
-      setIsLoggedIn(null)
     })
+    return () => unsubscribe()
   }, [])
   return (
     <FirebaseAuth.Provider value={{ register, putData, login, isLoggedIn }}>
