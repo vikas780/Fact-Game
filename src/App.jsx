@@ -1,6 +1,7 @@
 import { app } from './Firebase/Firebase'
 import { getDatabase, ref, set } from 'firebase/database'
 import './index.css'
+import HomePage from './Pages/HomePage'
 
 const db = getDatabase(app)
 
@@ -15,7 +16,7 @@ function writeUserData() {
 function App() {
   return (
     <>
-      <div>
+      {/* <div>
         <p className='text-4xl font-bold underline bg-green-500'>
           Click on the Vite and React logos to learn more
         </p>
@@ -25,7 +26,8 @@ function App() {
         >
           Put data
         </button>
-      </div>
+      </div> */}
+      <HomePage />
     </>
   )
 }
