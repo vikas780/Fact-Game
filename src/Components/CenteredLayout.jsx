@@ -4,7 +4,11 @@ import CenteredContainer from './CenteredContainer'
 const CenteredLayout = () => {
   const { pathname } = useLocation()
   const getBackground = () => {
-    if (pathname === '/login' || pathname === '/register')
+    if (
+      pathname === '/login' ||
+      pathname === '/register' ||
+      pathname === '/leaderboard'
+    )
       return 'bg-login-page'
     if (pathname === '/gameend') return 'bg-game-end'
     return 'bg-game-home'
