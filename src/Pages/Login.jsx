@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import { useFirebaseAuthContext } from '../Context/Auth'
 
 const Login = () => {
+  const { login } = useFirebaseAuthContext()
   const navigate = useNavigate()
   const [credentials, setCredentials] = useState({
     email: '',
@@ -13,7 +15,7 @@ const Login = () => {
     const { name, value } = e.target
     setCredentials({ ...credentials, [name]: value })
   }
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
 
     const { email, password } = credentials
@@ -26,14 +28,15 @@ const Login = () => {
       toast.error('Please enter your password')
       return
     }
-
-    // Here you can add your login logic, e.g., API call
-
-    toast.success('Login successful! Redirecting...')
-    // Delay navigation to show toast
-    setTimeout(() => {
-      navigate('/game')
-    }, 1500)
+    try {
+      await login(credentials.email, credentials.password)
+      toast.success('Login successful! Redirecting...')
+      setTimeout(() => {
+        navigate('/game')
+      }, 500)
+    } catch (err) {
+      toast.error(err.message)
+    }
   }
   return (
     <div className='backdrop-blur-md rounded-2xl p-6 sm:p-10 w-full max-w-md border border-[#3A4A7A] mx-4 sm:mx-0'>

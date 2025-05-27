@@ -2,8 +2,10 @@ import React, { useState } from 'react'
 import ValidateRegister from '../utils/ValidateRegister'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import { useFirebaseAuthContext } from '../Context/Auth'
 
 const Register = () => {
+  const { register, putData } = useFirebaseAuthContext()
   const [credentials, setCredentials] = useState({
     name: '',
     email: '',
@@ -18,19 +20,37 @@ const Register = () => {
     const { name, value } = e.target
     setCredentials({ ...credentials, [name]: value })
   }
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     const inputError = ValidateRegister(credentials)
+
     if (Object.entries(inputError).length === 0) {
-      setFormErrors({})
-      toast.success('Register successful! Redirecting...')
-      setTimeout(() => {
-        navigate('/game')
-      }, 1500)
+      try {
+        const userCredential = await register(
+          credentials.email,
+          credentials.password
+        )
+        const uid = userCredential.user.uid
+
+        await putData(`users/${uid}`, {
+          name: credentials.name,
+          email: credentials.email,
+          phone: credentials.phone,
+        })
+
+        setFormErrors({})
+        toast.success('Register successful! Redirecting...')
+        setTimeout(() => {
+          navigate('/game')
+        }, 1500)
+      } catch (err) {
+        toast.error(err.message)
+      }
     } else {
       setFormErrors(inputError)
     }
   }
+
   return (
     <div className='backdrop-blur-md rounded-2xl p-10 w-full max-w-3xl border border-[#3A4A7A]'>
       <h2 className='text-white text-3xl font-bold text-center mb-8'>
