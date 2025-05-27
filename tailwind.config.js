@@ -4,7 +4,9 @@ export default {
   theme: {
     extend: {
       backgroundImage: {
-        'game-home': "url('./assets/Background.svg')",
+        'login-page': "url('/assets/LoginBackground.svg')",
+        'game-home': "url('/assets/Background.svg')",
+        'game-end': "url('/assets/LoginBackground.svg')",
       },
     },
   },
