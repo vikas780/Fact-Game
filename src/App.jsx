@@ -1,7 +1,9 @@
 // import { app } from './Firebase/Firebase'
 // import { getDatabase, ref, set } from 'firebase/database'
 import './index.css'
-import CenteredLayout from './Components/CenteredLayout'
+import { CenteredLayout, ProtectedRoute } from './Components/index'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import {
   Login,
   NotFound,
@@ -25,9 +27,19 @@ import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom'
 
 const AppLayout = () => {
   return (
-    <CenteredLayout>
-      <Outlet />
-    </CenteredLayout>
+    <>
+      <CenteredLayout>
+        <Outlet />
+      </CenteredLayout>
+      <ToastContainer
+        position='top-right'
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+      />
+    </>
   )
 }
 
@@ -51,15 +63,27 @@ const router = createBrowserRouter([
       },
       {
         path: '/game',
-        element: <Game />,
+        element: (
+          <ProtectedRoute>
+            <Game />
+          </ProtectedRoute>
+        ),
       },
       {
         path: '/gameend',
-        element: <GameEnd />,
+        element: (
+          <ProtectedRoute>
+            <GameEnd />
+          </ProtectedRoute>
+        ),
       },
       {
         path: '/leaderboard',
-        element: <LeaderBoard />,
+        element: (
+          <ProtectedRoute>
+            <LeaderBoard />
+          </ProtectedRoute>
+        ),
       },
     ],
   },

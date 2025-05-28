@@ -1,15 +1,32 @@
 import { useLocation } from 'react-router-dom'
+import { useGameContext } from '../Context/Game'
 
 const Navbar = () => {
   const { pathname } = useLocation()
+  const { score } = useGameContext()
 
   return (
-    <div className='absolute top-2 left-4 right-4 h-24 px-6 flex justify-end items-center  backdrop-blur-md bg-white/10 rounded-lg'>
+    <div className='absolute top-2 left-4 right-4 h-24 flex items-center justify-between px-6 rounded-xl border border-[#3A4B9A] bg-gradient-to-r from-[#1c2572] to-[#12143F]'>
       {pathname !== '/' && (
-        <h1 className=' text-white lg:text-xl md:text-base text-sm font-bold underline ml-4 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2   '>
-          CATCH THE FAKE
-        </h1>
+        <div
+          className={`flex flex-col items-center justify-center mx-auto ${
+            pathname === '/game' ? 'mt-14' : 'mt-1'
+          }`}
+        >
+          <h1 className='text-white font-extrabold text-lg'>CATCH THE FAKE</h1>
+
+          {pathname === '/game' && (
+            <div className='flex items-center bg-[#0e113b] px-6 py-2 gap-2 rounded-full border border-[#3A4B9A] mt-2'>
+              <div className='p-1 flex items-center justify-center rounded-full border border-blue-400 bg-[#000A3F] text-sm'>
+                ⭐
+              </div>
+              <span className='text-white font-bold text-xl ml-2'>{score}</span>
+            </div>
+          )}
+        </div>
       )}
+
+      {/* Hamburger Menu */}
       <div className='w-10 h-10 flex items-center justify-center cursor-pointer'>
         <div className='space-y-1'>
           <div className='w-6 h-0.5 bg-white'></div>

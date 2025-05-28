@@ -1,4 +1,8 @@
+import { NavLink } from 'react-router-dom'
+import { useGameContext } from '../Context/Game'
+
 const GameEnd = () => {
+  const { score } = useGameContext()
   return (
     <div className='relative w-full min-h-screen flex items-center justify-center px-4'>
       {/* Background Overlay */}
@@ -37,20 +41,22 @@ const GameEnd = () => {
               ⭐
             </div>
             <div className='flex'>
-              <span className='text-4xl font-bold px-3 py-1'>15</span>
+              <span className='text-4xl font-bold px-3 py-1'>{score}</span>
               <span className='text-sm self-end pb-1'>Points</span>
             </div>
           </div>
         </div>
-
         {/* Button outside the card */}
-        <button
-          type='button'
-          className='w-1/2 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-blue-700'
-          aria-label='Play Again'
-        >
-          Play Again
-        </button>
+
+        <NavLink to='/leaderboard' className='w-1/2'>
+          <button
+            type='button'
+            className='w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-blue-700'
+            aria-label='Continue to Leaderboard'
+          >
+            Continue
+          </button>
+        </NavLink>
       </div>
     </div>
   )
