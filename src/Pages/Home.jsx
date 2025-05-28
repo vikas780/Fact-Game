@@ -1,7 +1,16 @@
-import React from 'react'
 import { NavLink } from 'react-router-dom'
+import { useFirebaseAuthContext } from '../Context/Auth'
+import { Navigate } from 'react-router-dom'
 
 const Home = () => {
+  const { isLoggedIn, loading } = useFirebaseAuthContext()
+  if (loading) {
+    return <div className='text-white text-center mt-10'>Loading...</div>
+  }
+  if (isLoggedIn) {
+    return <Navigate to='/game' />
+  }
+
   return (
     <div className='text-white text-center max-w-full w-full mt-[120px]'>
       <h1 className='text-3xl md:text-5xl lg:text-5xl font-bold mb-4'>
