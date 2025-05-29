@@ -11,6 +11,8 @@ const LeaderBoard = () => {
   const { database, setScore } = useGameContext()
   const { firebaseAuth } = useFirebaseAuthContext()
 
+  /* This `useEffect` hook in the `LeaderBoard` component is responsible for setting up subscriptions to
+Firebase authentication changes and database updates. Here's a breakdown of what it does: */
   useEffect(() => {
     const unsubscribeAuth = firebaseAuth.onAuthStateChanged((user) => {
       if (user) {

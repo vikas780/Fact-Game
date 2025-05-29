@@ -18,6 +18,13 @@ const Game = () => {
     })
   }, [])
 
+  /**
+   * The handleDragEnd function checks the drag offset to determine if the user's action is correct,
+   * updates the score and background color accordingly, and navigates to the next game stage or end
+   * screen after a delay.
+   * @returns If the `offsetY` is not less than -40 or greater than 40, the function will return early
+   * and not execute the rest of the code block.
+   */
   const handleDragEnd = (event, info) => {
     const offsetY = info.offset.y
     const actualIsSafe = data[currentIndex].isSafe
@@ -49,6 +56,9 @@ const Game = () => {
     }, 1000)
   }
 
+  /* The commented out `getPosition` function in the code snippet is a helper function that determines
+the position of images based on their index relative to the current index in the game. Here's a
+breakdown of how it works: */
   const getPosition = (index) => {
     if (index < currentIndex - 1) return 'left'
     if (index === currentIndex - 1) return 'left1'
@@ -57,6 +67,9 @@ const Game = () => {
     return 'right'
   }
 
+  /* The `imageVariants` object in the code snippet defines different variants for the position and
+styling of images based on their index relative to the current index in the game. These variants are
+used in the animation of the images within the game component. */
   const imageVariants = {
     center: { x: '0%', scale: 1, zIndex: 5 },
     left1: { x: '-50%', scale: 0.7, zIndex: 3 },

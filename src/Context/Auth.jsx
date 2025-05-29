@@ -1,25 +1,18 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { initializeApp } from 'firebase/app'
 import {
-  getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   onAuthStateChanged,
   signOut,
 } from 'firebase/auth'
-import { getDatabase, set, ref } from 'firebase/database'
-import { firebaseConfig } from '../utils/FireBaseConfig'
+import { set, ref } from 'firebase/database'
+import { firebaseAuth, database } from '../utils/FireBaseConfig'
 //import { getFirestore } from 'firebase/firestore'
 // import { data } from '../utils/data.js'
 
 const FirebaseAuth = createContext()
 
 export const useFirebaseAuthContext = () => useContext(FirebaseAuth)
-
-const firebaseApp = initializeApp(firebaseConfig)
-const firebaseAuth = getAuth(firebaseApp)
-const database = getDatabase(firebaseApp)
-//const db = getFirestore(firebaseApp)
 
 const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false)

@@ -12,6 +12,10 @@ const Login = () => {
     password: '',
   })
 
+  /**
+   * The handleLogin function updates the credentials state with the new value based on the input field
+   * name.
+   */
   const handleLogin = (e) => {
     const { name, value } = e.target
     setCredentials({ ...credentials, [name]: value })
