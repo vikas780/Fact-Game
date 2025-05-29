@@ -7,15 +7,17 @@ const Game = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [data, setData] = useState([])
   const [bgColor, setBgColor] = useState('transparent')
+  const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
   const { score, setScore, fetchMessages } = useGameContext()
 
   useEffect(() => {
     fetchMessages().then((items) => {
-      console.log('Fetched messages:', items)
       setData(items)
+      setLoading(false)
     })
   }, [])
+
   const handleDragEnd = (event, info) => {
     const offsetY = info.offset.y
     const actualIsSafe = data[currentIndex].isSafe
@@ -23,24 +25,20 @@ const Game = () => {
     let isCorrect = false
 
     if (offsetY < -40) {
-      // User thinks it's FRAUD
       isCorrect = !actualIsSafe
     } else if (offsetY > 40) {
-      // User thinks it's SAFE
       isCorrect = actualIsSafe
     } else {
-      // Not enough drag distance, ignore
       return
     }
 
     if (isCorrect) {
       setScore((prev) => prev + 5)
-      setBgColor('bg-green-400')
+      setBgColor('bg-green-600')
     } else {
-      setBgColor('bg-red-400')
+      setBgColor('bg-red-600')
     }
 
-    // Wait 1s and then move to next
     setTimeout(() => {
       setBgColor('transparent')
       if (currentIndex < data.length - 1) {
@@ -69,32 +67,43 @@ const Game = () => {
 
   return (
     <div
-      className={`relative flex flex-col items-center justify-center h-[600px] w-full overflow-hidden ${bgColor} `}
+      className={`relative flex flex-col items-center justify-center w-full overflow-hidden rounded-md ${bgColor}
+        h-[25rem] sm:h-[31.25rem] md:h-[34.375rem] lg:h-[37.5rem]`}
     >
-      {data.map((image, index) => (
-        <motion.img
-          key={index}
-          src={image.img}
-          alt={`img-${index}`}
-          className='absolute rounded-[12px] shadow-lg'
-          style={{
-            width: '300px',
-            height: '260px',
-            objectFit: 'contain', // Ensures no cropping
-            backgroundColor: '#1A1D3A',
-
-            padding: '8px', // or 'contain' if you want full visibility
-          }}
-          initial={false}
-          animate={getPosition(index)}
-          variants={imageVariants}
-          transition={{ duration: 0.5 }}
-          drag={index === currentIndex ? 'y' : false}
-          dragSnapToOrigin={true}
-          dragConstraints={{ top: -100, bottom: 100 }}
-          onDragEnd={index === currentIndex ? handleDragEnd : undefined}
-        />
-      ))}
+      {loading
+        ? Array.from({ length: 3 }).map((_, idx) => (
+            <div
+              key={idx}
+              className='absolute rounded-[0.75rem] w-[13.75rem] h-[12.5rem] sm:w-[16.25rem] sm:h-[13.75rem] md:w-[17.5rem] md:h-[15rem] lg:w-[18.75rem] lg:h-[16.25rem] bg-[#3b47af] overflow-hidden'
+              style={{
+                zIndex: 3 - idx,
+                transform: `translateX(${idx * 5}rem) scale(${1 - idx * 0.1})`,
+              }}
+            >
+              <div className='absolute inset-0 animate-shimmer bg-[linear-gradient(90deg,#1f2eb1_0%,#1A1D3A_50%,#252b63_100%)] bg-[length:200%_100%]' />
+            </div>
+          ))
+        : data.map((image, index) => (
+            <motion.img
+              key={index}
+              src={image.img}
+              alt={`img-${index}`}
+              className='absolute rounded-[0.75rem] shadow-lg
+                w-[13.75rem] h-[12.5rem]
+                sm:w-[16.25rem] sm:h-[13.75rem]
+                md:w-[17.5rem] md:h-[15rem]
+                lg:w-[18.75rem] lg:h-[16.25rem]
+                bg-[#1A1D3A] object-contain p-2'
+              initial={false}
+              animate={getPosition(index)}
+              variants={imageVariants}
+              transition={{ duration: 0.5 }}
+              drag={index === currentIndex ? 'y' : false}
+              dragSnapToOrigin={true}
+              dragConstraints={{ top: -100, bottom: 100 }}
+              onDragEnd={index === currentIndex ? handleDragEnd : undefined}
+            />
+          ))}
     </div>
   )
 }

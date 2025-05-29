@@ -5,33 +5,27 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   onAuthStateChanged,
+  signOut,
 } from 'firebase/auth'
 import { getDatabase, set, ref } from 'firebase/database'
-import { getFirestore, collection, addDoc } from 'firebase/firestore'
+import { firebaseConfig } from '../utils/FireBaseConfig'
+//import { getFirestore } from 'firebase/firestore'
 // import { data } from '../utils/data.js'
 
 const FirebaseAuth = createContext()
 
 export const useFirebaseAuthContext = () => useContext(FirebaseAuth)
 
-const firebaseConfig = {
-  apiKey: 'AIzaSyCXUyuB2xFBQpiFIVmZ_3qe2sA886qzdY4',
-  authDomain: 'fact-game-8522f.firebaseapp.com',
-  projectId: 'fact-game-8522f',
-  storageBucket: 'fact-game-8522f.firebasestorage.app',
-  messagingSenderId: '518797516059',
-  appId: '1:518797516059:web:ab7c894501e3cacc1a47be',
-  databaseURL: 'https://fact-game-8522f-default-rtdb.firebaseio.com',
-}
-
 const firebaseApp = initializeApp(firebaseConfig)
 const firebaseAuth = getAuth(firebaseApp)
 const database = getDatabase(firebaseApp)
-const db = getFirestore(firebaseApp)
+//const db = getFirestore(firebaseApp)
 
 const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [menuOpen, setMenuOpen] = useState(false)
+
   const register = (email, password) =>
     createUserWithEmailAndPassword(firebaseAuth, email, password)
 
@@ -52,10 +46,22 @@ const AuthProvider = ({ children }) => {
   //     console.error('Upload error:', err)
   //   }
   // }
+
+  const handleLogout = async () => {
+    try {
+      await signOut(firebaseAuth)
+      setMenuOpen(false)
+    } catch (err) {
+      console.error('Logout error:', err)
+    }
+  }
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(firebaseAuth, (user) => {
       if (user) {
         setIsLoggedIn(true)
+        setLoading(false)
+      } else {
+        setIsLoggedIn(false)
         setLoading(false)
       }
     })
@@ -63,7 +69,17 @@ const AuthProvider = ({ children }) => {
   }, [])
   return (
     <FirebaseAuth.Provider
-      value={{ register, putData, login, isLoggedIn, loading }}
+      value={{
+        register,
+        putData,
+        login,
+        isLoggedIn,
+        loading,
+        firebaseAuth,
+        handleLogout,
+        menuOpen,
+        setMenuOpen,
+      }}
     >
       {children}
     </FirebaseAuth.Provider>
