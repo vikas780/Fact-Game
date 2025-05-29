@@ -20,6 +20,11 @@ const Register = () => {
     const { name, value } = e.target
     setCredentials({ ...credentials, [name]: value })
   }
+  /**
+   * The handleSubmit function handles form submission for user registration, validates input fields,
+   * registers the user, and redirects to the game page upon successful registration.
+   */
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     const inputError = ValidateRegister(credentials)
