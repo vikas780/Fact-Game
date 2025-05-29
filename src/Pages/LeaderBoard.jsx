@@ -1,71 +1,102 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useGameContext } from '../Context/Game'
+import { ref, onValue } from 'firebase/database'
+import { useFirebaseAuthContext } from '../Context/Auth'
+import { NavLink } from 'react-router-dom'
 
 const LeaderBoard = () => {
-  const data = [
-    { rank: 1, name: 'Arther', points: 30, initial: 'A' },
-    { rank: 2, name: 'Ramaraz', points: 28, initial: 'R' },
-    { rank: 3, name: 'Loren Ipsum', points: 25, initial: 'L' },
-    { rank: 4, name: 'Loren Ipsum', points: 24, initial: 'L' },
-    { rank: 5, name: 'Loren Ipsum', points: 20, initial: 'L' },
-    { rank: 6, name: 'Loren Ipsum', points: 18, initial: 'L' },
-    { rank: 7, name: 'Loren Ipsum', points: 17, initial: 'L' },
-    { rank: 8, name: 'Loren Ipsum', points: 17, initial: 'L' },
-    { rank: 9, name: 'Loren Ipsum', points: 16, initial: 'L' },
-    { rank: 10, name: 'John (you)', points: 16, initial: 'J', isUser: true },
-  ]
+  const [leaderboard, setLeaderboard] = useState([])
+  const [currentUserUid, setCurrentUserUid] = useState(null)
+  const { database, setScore } = useGameContext()
+  const { firebaseAuth } = useFirebaseAuthContext()
+
+  useEffect(() => {
+    const unsubscribeAuth = firebaseAuth.onAuthStateChanged((user) => {
+      if (user) {
+        setCurrentUserUid(user.uid)
+      }
+    })
+
+    const usersRef = ref(database, 'users')
+    const unsubscribeDB = onValue(usersRef, (snapshot) => {
+      const data = snapshot.val() || {}
+      const scores = Object.entries(data).map(([uid, user]) => ({
+        uid,
+        name: user.name || 'Anonymous',
+        score: user.score || 0,
+      }))
+      scores.sort((a, b) => b.score - a.score)
+      setLeaderboard(scores)
+    })
+
+    return () => {
+      unsubscribeDB()
+      unsubscribeAuth()
+    }
+  }, [database, firebaseAuth])
 
   return (
-    <section className='px-4 py-6 mt-24 w-full flex flex-col items-center'>
-      <div className='backdrop-blur-md rounded-2xl p-6 w-full max-w-lg border border-[#3A4A7A]'>
-        <h2
-          className='text-2xl font-bold text-center mb-4 text-white'
-          aria-label='Leaderboard'
-        >
+    <section className='px-4 py-6 mt-24 w-full flex flex-col items-center overflow-x-hidden'>
+      <div className='backdrop-blur-md rounded-2xl p-6 sm:p-8 w-full max-w-md sm:max-w-lg md:max-w-2xl border border-[#3A4A7A]'>
+        <h2 className='text-2xl sm:text-3xl font-bold text-center mb-6 text-white'>
           LEADERBOARD
         </h2>
 
-        <ol className='space-y-2 max-h-80 overflow-y-auto pr-2' role='list'>
-          {data.map(({ rank, name, points, initial, isUser }) => (
-            <li
-              key={rank}
-              className={`flex items-center justify-between px-4 py-2 rounded-md text-white ${
-                isUser
-                  ? 'bg-blue-600'
-                  : rank % 2 === 0
-                  ? 'bg-gray-300/60'
-                  : 'bg-gray-500/60'
-              }`}
-              aria-label={`Rank ${rank}, ${name}, ${points} points`}
-            >
-              <div className='flex items-center space-x-4 min-w-0'>
-                <span className='w-6 text-right'>{rank}</span>
-                <div className='bg-blue-500 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold'>
-                  {initial}
+        <ol
+          className='space-y-2 max-h-80 overflow-y-auto pr-2 min-h-64'
+          role='list'
+        >
+          {leaderboard.map(({ uid, name, score }, idx) => {
+            const isCurrentUser = uid === currentUserUid
+            const bgColor = isCurrentUser
+              ? 'bg-blue-600'
+              : (idx + 1) % 2 === 0
+              ? 'bg-gray-300/60'
+              : 'bg-gray-500/60'
+
+            return (
+              <li
+                key={uid}
+                className={`flex items-center justify-between px-4 py-2 rounded-md text-white ${bgColor}`}
+                aria-label={`Rank ${idx + 1}, ${name}, ${score} points`}
+              >
+                <div className='flex items-center space-x-4 min-w-0'>
+                  <span className='w-6 text-right'>{idx + 1}</span>
+                  <div className='bg-blue-500 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold'>
+                    {name[0]?.toUpperCase() || '?'}
+                  </div>
+                  <p className='truncate max-w-[140px] sm:max-w-[200px]'>
+                    {isCurrentUser ? `${name} (you)` : name}
+                  </p>
                 </div>
-                <p className='truncate max-w-[140px]'>{name}</p>
-              </div>
-              <p className='text-sm whitespace-nowrap'>{points} points</p>
-            </li>
-          ))}
+                <p className='text-sm sm:text-base whitespace-nowrap'>
+                  {score} points
+                </p>
+              </li>
+            )
+          })}
         </ol>
       </div>
 
-      {/* Centered Buttons */}
-      <div className='flex justify-center flex-wrap gap-4 mt-6'>
+      {/* Buttons */}
+      <div className='flex justify-center flex-wrap gap-4 mt-8 w-full max-w-md sm:max-w-lg'>
         <button
           type='button'
-          className='bg-[#1e1e3f] hover:bg-[#2e2e5f] px-14 py-3 rounded-xl border border-blue-400 shadow text-white flex items-center space-x-2'
+          className='flex-1 min-w-[140px] bg-[#1e1e3f] hover:bg-[#2e2e5f] px-6 py-3 rounded-xl border border-blue-400 shadow text-white flex items-center justify-center space-x-2 text-sm sm:text-base'
         >
           <span>🔗</span>
           <span>Share</span>
         </button>
-        <button
-          type='button'
-          aria-label='Play again'
-          className='bg-blue-950 hover:bg-blue-700 px-14 py-3 rounded-xl  text-white '
-        >
-          Play Again
-        </button>
+        <NavLink to='/game' className='flex-1 min-w-[140px]'>
+          <button
+            type='button'
+            onClick={() => setScore(0)}
+            aria-label='Play again'
+            className='w-full px-6 py-3 rounded-xl bg-blue-950 hover:bg-blue-700 text-white text-sm sm:text-base'
+          >
+            Play Again
+          </button>
+        </NavLink>
       </div>
     </section>
   )

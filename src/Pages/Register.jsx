@@ -52,8 +52,8 @@ const Register = () => {
   }
 
   return (
-    <div className='backdrop-blur-md rounded-2xl p-10 w-full max-w-3xl border border-[#3A4A7A]'>
-      <h2 className='text-white text-3xl font-bold text-center mb-8'>
+    <div className='backdrop-blur-md rounded-2xl p-6 sm:p-10 mx-auto w-full max-w-2xl border border-[#3A4A7A] mt-32 md:mt-24 lg:mt-30'>
+      <h2 className='text-white text-2xl sm:text-3xl font-bold text-center mb-8'>
         Register yourself
       </h2>
 
@@ -69,9 +69,11 @@ const Register = () => {
             value={credentials.name}
             onChange={handleRegister}
             placeholder='Amulya'
-            className='lg:w-[330px] md:w-1/2 w-auto px-4 py-3 rounded-md bg-[#1A1D3A] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500'
+            className='lg:w-[17.5rem] md:w-[17.5rem] w-full px-4 py-3 rounded-md bg-[#1A1D3A] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500'
           />
-          {formErrors.name && <p className='text-red-500'>{formErrors.name}</p>}
+          {formErrors.name && (
+            <p className='text-red-500 mt-1'>{formErrors.name}</p>
+          )}
         </div>
 
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
@@ -89,7 +91,7 @@ const Register = () => {
               className='w-full px-4 py-3 rounded-md bg-[#1A1D3A] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500'
             />
             {formErrors.email && (
-              <p className='text-red-500'>{formErrors.email}</p>
+              <p className='text-red-500 mt-1'>{formErrors.email}</p>
             )}
           </div>
 
@@ -107,7 +109,7 @@ const Register = () => {
               className='w-full px-4 py-3 rounded-md bg-[#1A1D3A] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500'
             />
             {formErrors.phone && (
-              <p className='text-red-500'>{formErrors.phone}</p>
+              <p className='text-red-500 mt-1'>{formErrors.phone}</p>
             )}
           </div>
         </div>
@@ -127,7 +129,7 @@ const Register = () => {
               className='w-full px-4 py-3 rounded-md bg-[#1A1D3A] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500'
             />
             {formErrors.password && (
-              <p className='text-red-500'>{formErrors.password}</p>
+              <p className='text-red-500 mt-1'>{formErrors.password}</p>
             )}
           </div>
 
@@ -148,7 +150,7 @@ const Register = () => {
               className='w-full px-4 py-3 rounded-md bg-[#1A1D3A] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500'
             />
             {formErrors.confirmpass && (
-              <p className='text-red-500'>{formErrors.confirmpass}</p>
+              <p className='text-red-500 mt-1'>{formErrors.confirmpass}</p>
             )}
           </div>
         </div>
@@ -157,7 +159,7 @@ const Register = () => {
         <div className='flex justify-center pt-4'>
           <button
             type='submit'
-            className='w-48 bg-gradient-to-r from-blue-500 to-black text-white py-3 rounded-md font-semibold hover:from-blue-400 hover:to-gray-800 transition-all shadow-[0_0_4px_#3b82f6] hover:shadow-[0_0_4px_#60a5fa]'
+            className='w-full max-w-xs sm:w-48 bg-gradient-to-r from-blue-500 to-black text-white py-3 rounded-md font-semibold hover:from-blue-400 hover:to-gray-800 transition-all shadow-[0_0_4px_#3b82f6] hover:shadow-[0_0_4px_#60a5fa]'
           >
             Continue
           </button>

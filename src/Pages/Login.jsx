@@ -6,6 +6,7 @@ import { useFirebaseAuthContext } from '../Context/Auth'
 const Login = () => {
   const { login } = useFirebaseAuthContext()
   const navigate = useNavigate()
+  const [isSubmitted, setIsSubmitted] = useState(false)
   const [credentials, setCredentials] = useState({
     email: '',
     password: '',
@@ -17,7 +18,7 @@ const Login = () => {
   }
   const handleSubmit = async (e) => {
     e.preventDefault()
-
+    setIsSubmitted(true)
     const { email, password } = credentials
 
     if (!email) {
@@ -36,6 +37,8 @@ const Login = () => {
       }, 500)
     } catch (err) {
       toast.error(err.message)
+    } finally {
+      setIsSubmitted(false)
     }
   }
   return (
@@ -86,7 +89,7 @@ const Login = () => {
             type='submit'
             className='w-48 bg-gradient-to-r from-blue-500 to-black text-white py-3 rounded-md font-semibold hover:from-blue-400 hover:to-gray-800 transition-all shadow-[0_0_4px_#3b82f6] hover:shadow-[0_0_6px_#60a5fa]'
           >
-            Next
+            {isSubmitted ? 'Submitting...' : 'Next'}
           </button>
         </div>
       </form>
