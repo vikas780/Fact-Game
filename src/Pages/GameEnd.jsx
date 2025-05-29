@@ -6,12 +6,11 @@ const GameEnd = () => {
   const { score, updateScore } = useGameContext()
 
   useEffect(() => {
-    updateScore(score) // Save score to Firebase DB
+    updateScore(score)
   }, [])
 
   return (
     <div className='relative w-full min-h-screen flex items-center justify-center px-4 py-8'>
-      {/* Background Overlay */}
       <img
         src='/assets/Effect.svg'
         alt=''
@@ -19,9 +18,7 @@ const GameEnd = () => {
         aria-hidden='true'
       />
 
-      {/* Content Container */}
       <div className='relative z-10 w-full max-w-sm sm:max-w-md md:max-w-lg flex flex-col items-center space-y-6'>
-        {/* Card */}
         <div
           className='w-full backdrop-blur-md bg-[#0c1b4871] text-white rounded-2xl shadow-xl p-6 sm:p-8 text-center space-y-4'
           role='region'
@@ -58,7 +55,6 @@ const GameEnd = () => {
           </div>
         </div>
 
-        {/* Button */}
         <NavLink to='/leaderboard' className='w-full sm:w-1/2'>
           <button
             type='button'

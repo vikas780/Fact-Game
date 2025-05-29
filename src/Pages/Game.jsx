@@ -88,6 +88,7 @@ const Game = () => {
               key={index}
               src={image.img}
               alt={`img-${index}`}
+              loading={index === 0 ? 'eager' : 'lazy'}
               className='absolute rounded-[0.75rem] shadow-lg
                 w-[13.75rem] h-[12.5rem]
                 sm:w-[16.25rem] sm:h-[13.75rem]

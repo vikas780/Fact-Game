@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useCallback, useContext, useState } from 'react'
 import { collection, getDocs, getFirestore } from 'firebase/firestore'
 import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
@@ -15,7 +15,7 @@ const database = getDatabase(firebaseApp)
 const GameProvider = ({ children }) => {
   const [score, setScore] = useState(0)
 
-  const fetchMessages = async () => {
+  const fetchMessages = useCallback(async () => {
     try {
       const snapshot = await getDocs(collection(db, 'messages'))
       console.log(snapshot)
@@ -28,7 +28,7 @@ const GameProvider = ({ children }) => {
       console.error('Error fetching messages:', err)
       return []
     }
-  }
+  }, [])
 
   const updateScore = async (val) => {
     const auth = getAuth()

@@ -7,6 +7,7 @@ import { NavLink } from 'react-router-dom'
 const LeaderBoard = () => {
   const [leaderboard, setLeaderboard] = useState([])
   const [currentUserUid, setCurrentUserUid] = useState(null)
+  const [loading, setLoading] = useState(true)
   const { database, setScore } = useGameContext()
   const { firebaseAuth } = useFirebaseAuthContext()
 
@@ -27,6 +28,7 @@ const LeaderBoard = () => {
       }))
       scores.sort((a, b) => b.score - a.score)
       setLeaderboard(scores)
+      setLoading(false)
     })
 
     return () => {
@@ -46,35 +48,49 @@ const LeaderBoard = () => {
           className='space-y-2 max-h-80 overflow-y-auto pr-2 min-h-64'
           role='list'
         >
-          {leaderboard.map(({ uid, name, score }, idx) => {
-            const isCurrentUser = uid === currentUserUid
-            const bgColor = isCurrentUser
-              ? 'bg-blue-600'
-              : (idx + 1) % 2 === 0
-              ? 'bg-gray-300/60'
-              : 'bg-gray-500/60'
-
-            return (
-              <li
-                key={uid}
-                className={`flex items-center justify-between px-4 py-2 rounded-md text-white ${bgColor}`}
-                aria-label={`Rank ${idx + 1}, ${name}, ${score} points`}
-              >
-                <div className='flex items-center space-x-4 min-w-0'>
-                  <span className='w-6 text-right'>{idx + 1}</span>
-                  <div className='bg-blue-500 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold'>
-                    {name[0]?.toUpperCase() || '?'}
+          {loading
+            ? Array.from({ length: 5 }).map((_, idx) => (
+                <li
+                  key={idx}
+                  className='flex items-center justify-between px-4 py-2 rounded-md bg-gray-600/30 animate-pulse'
+                >
+                  <div className='flex items-center space-x-4 min-w-0'>
+                    <span className='w-6 text-right text-transparent'>0</span>
+                    <div className='bg-gray-400 w-6 h-6 rounded-full'></div>
+                    <div className='bg-gray-400 rounded w-24 h-4'></div>
                   </div>
-                  <p className='truncate max-w-[140px] sm:max-w-[200px]'>
-                    {isCurrentUser ? `${name} (you)` : name}
-                  </p>
-                </div>
-                <p className='text-sm sm:text-base whitespace-nowrap'>
-                  {score} points
-                </p>
-              </li>
-            )
-          })}
+                  <div className='bg-gray-400 rounded w-16 h-4'></div>
+                </li>
+              ))
+            : leaderboard.map(({ uid, name, score }, idx) => {
+                const isCurrentUser = uid === currentUserUid
+                const bgColor = isCurrentUser
+                  ? 'bg-blue-600'
+                  : (idx + 1) % 2 === 0
+                  ? 'bg-gray-300/60'
+                  : 'bg-gray-500/60'
+
+                return (
+                  <li
+                    key={uid}
+                    className={`flex items-center justify-between px-4 py-2 rounded-md text-white ${bgColor}`}
+                    aria-label={`Rank ${idx + 1}, ${name}, ${score} points`}
+                  >
+                    <div className='flex items-center space-x-4 min-w-0'>
+                      <span className='w-6 text-right'>{idx + 1}</span>
+                      <div className='bg-blue-500 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold'>
+                        {name[0]?.toUpperCase() || '?'}
+                      </div>
+                      <p className='truncate max-w-[140px] sm:max-w-[200px]'>
+                        {isCurrentUser ? `${name} (you)` : name}
+                      </p>
+                    </div>
+                    <p className='text-sm sm:text-base whitespace-nowrap'>
+                      {score} points
+                    </p>
+                  </li>
+                )
+              })}
         </ol>
       </div>
 
